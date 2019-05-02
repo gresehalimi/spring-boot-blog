@@ -1,6 +1,7 @@
 package com.amd.springbootblog.service;
 
 import com.amd.springbootblog.data.BooleanResultObject;
+import com.amd.springbootblog.data.DataResultObject;
 import com.amd.springbootblog.data.PagingResultObject;
 import com.amd.springbootblog.data.ResponseStatus;
 import com.amd.springbootblog.dto.PostRegister;
@@ -113,6 +114,21 @@ public class PostService {
         }
         return booleanResultObject;
     }
+/*
+
+    public DataResultObject getPost(Long postId){
+        DataResultObject dataResultObject= new DataResultObject();
+        dataResultObject.setStatus(409);
+        dataResultObject.setResponseStatus(ResponseStatus.CONFLICT);
+
+        Optional<Post> optionalPost= postRepository.findById(postId);
+
+        if(!optionalPost.isPresent()){
+            dataResultObject.setStatus(404);
+            dataResultObject.setResponseStatus(ResponseStatus.CONFLICT);
+        }
+    }
+*/
 
     public PagingResultObject filterPostsByCategoryAndOrContent(String categoryName, String content, int pageNo) {
         PagingResultObject pagingResultObject = new PagingResultObject();
@@ -147,7 +163,29 @@ public class PostService {
         return pagingResultObject;
     }
 
+    public BooleanResultObject deletePost(Long postId) {
+        BooleanResultObject booleanResultObject = new BooleanResultObject();
+        booleanResultObject.setResponseStatus(ResponseStatus.CONFLICT);
+        booleanResultObject.setStatus(409);
+        try {
+            Optional<Post> optionalPost = postRepository.findById(postId);
+            if (!optionalPost.isPresent()) {
+                booleanResultObject.setStatus(404);
+                booleanResultObject.setResponseStatus(ResponseStatus.NOT_FOUND);
+                booleanResultObject.setMessage("Post Not Found");
+            }
+            Post post = optionalPost.get();
+            postRepository.delete(post);
+
+        } catch (Exception e) {
+            booleanResultObject.setStatus(204);
+            booleanResultObject.setResponseStatus(ResponseStatus.NO_DATA);
+        }
+        return booleanResultObject;
+    }
 }
+
+
 
 
 
