@@ -12,6 +12,9 @@ import javax.validation.constraints.NotNull;
 public class CategoryModelAttribute {
 
     @NotNull
+    Long id;
+
+    @NotNull
     @NotBlank
     private String categoryName;
 }

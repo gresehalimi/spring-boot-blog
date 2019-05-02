@@ -42,11 +42,8 @@ public class Post {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @ManyToMany(targetEntity = Post.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "tbl_post_categories",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private List<Category> categories;
+    @OneToMany(targetEntity = PostCategories.class, mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PostCategories> postCategories;
 
 
     public void addComment(PostComment comment) {

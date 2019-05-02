@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ public class UserProfile {
     private Long id;
     private String username;
     private String name;
-    private Instant joinedAt;
-    private PostRegister postRegister;
-    private CategoryModelAttribute categoryModelAttribute;
+    private Date joinedAt;
+    private Long countPost;
+    private Long countComment;
 }

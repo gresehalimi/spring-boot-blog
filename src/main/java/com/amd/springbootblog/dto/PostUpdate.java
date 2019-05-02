@@ -1,5 +1,6 @@
 package com.amd.springbootblog.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,11 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostRegister {
+public class PostUpdate {
+
+    @NotNull
+    @NotBlank
+    private Long id;
 
     @NotNull
     @NotBlank

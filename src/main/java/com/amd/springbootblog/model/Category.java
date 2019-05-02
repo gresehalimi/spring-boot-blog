@@ -24,7 +24,7 @@ public class Category {
     @Column(name = "categoryName", length = 45, nullable = false)
     private String categoryName;
 
-    @ManyToMany(mappedBy = "categories")
-    private List<Post> posts;
+    @OneToMany(targetEntity = PostCategories.class, mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PostCategories> postCategories;
 
 }
