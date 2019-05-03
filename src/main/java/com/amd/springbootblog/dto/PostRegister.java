@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -30,9 +30,9 @@ public class PostRegister {
     @NotBlank
     private MultipartFile multipartFile;
 
-    @NotNull
+    /*@NotNull
     @NotBlank
-    private List<CategoryModelAttribute> categories;
-
+    private List<CategoryModelAttribute> categories;*/
+    /*private Date createdTime;*/
 }
 
