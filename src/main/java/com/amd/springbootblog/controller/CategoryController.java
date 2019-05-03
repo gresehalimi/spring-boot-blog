@@ -1,3 +1,4 @@
+/*
 package com.amd.springbootblog.controller;
 
 import com.amd.springbootblog.data.*;
@@ -24,7 +25,7 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PutMapping(value = "/create", produces = "application/json")
-    public ResponseEntity<?> createCategory(@Valid @ModelAttribute("categoryModelAttribute") CategoryModelAttribute categoryModelAttribute, BindingResult bindingResult, HttpServletRequest request) {
+    public ResponseEntity<?> createCategory(@Valid @ModelAttribute("categoryModelAttribute") Ca categoryModelAttribute, BindingResult bindingResult, HttpServletRequest request) {
         ResponseEntity responseEntity;
 
         FieldErrorResultObject fieldErrorResultObject = new FieldErrorResultObject();
@@ -62,3 +63,4 @@ public class CategoryController {
     }
 
 }
+*/

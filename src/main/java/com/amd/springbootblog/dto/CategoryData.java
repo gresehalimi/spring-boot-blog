@@ -9,9 +9,10 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class CategoryModelAttribute {
+public class CategoryData {
 
     @NotNull
+    @NotBlank
     Long id;
 
     @NotNull

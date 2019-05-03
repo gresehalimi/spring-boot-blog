@@ -4,6 +4,7 @@ import com.amd.springbootblog.data.ResponseStatus;
 import com.amd.springbootblog.data.*;
 import com.amd.springbootblog.dto.PostData;
 import com.amd.springbootblog.dto.PostRegister;
+import com.amd.springbootblog.dto.SearchForm;
 import com.amd.springbootblog.security.UserPrincipal;
 import com.amd.springbootblog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class PostController {
     }
 
     @GetMapping(value = "/{pageNumber}/category-content")
-    public ResponseEntity<?> filterPostsByCategoryAndOrContent(@PathVariable String categoryName, @PathVariable String content, @PathVariable("pageNo") int pageNumber) {
+    public ResponseEntity<?> filterPostsByCategoryAndOrContent(@PathVariable String categoryName, @PathVariable String content, @PathVariable("pageNo") int pageNumber,@ModelAttribute SearchForm searchForm) {
 
         ResponseEntity responseEntity;
         PagingResultObject pagingResultObject = postService.filterPostsByCategoryAndOrContent(categoryName, content, pageNumber);
