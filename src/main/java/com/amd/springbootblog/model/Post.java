@@ -32,8 +32,11 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
 
-    @OneToOne(targetEntity = File.class, mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private File file;
+    @Column(name="temporary_image_name", length = 50, nullable = true)
+    private String temporaryImageName;
+
+    @Column(name="image_extension", length = 50, nullable = true)
+    private String imageExtension;
 
     @OneToMany(targetEntity = PostComment.class, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostComment> comments;
@@ -45,16 +48,6 @@ public class Post {
     @OneToMany(targetEntity = PostCategories.class, mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PostCategories> postCategories;
 
-
-    public void addComment(PostComment comment) {
-        comments.add(comment);
-        comment.setPost(this);
-    }
-
-    public void removeComment(PostComment comment) {
-        comments.remove(comment);
-        comment.setPost(null);
-    }
 }
 
 

@@ -1,9 +1,11 @@
-/*
 package com.amd.springbootblog.controller;
 
-import com.amd.springbootblog.data.*;
+import com.amd.springbootblog.data.BooleanResultObject;
+import com.amd.springbootblog.data.ErrorMessageResultObject;
+import com.amd.springbootblog.data.FieldErrorResultObject;
 import com.amd.springbootblog.data.ResponseStatus;
-import com.amd.springbootblog.dto.CategoryModelAttribute;
+import com.amd.springbootblog.dto.CategoryData;
+import com.amd.springbootblog.security.UserPrincipal;
 import com.amd.springbootblog.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,8 +25,8 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
-    @PutMapping(value = "/create", produces = "application/json")
-    public ResponseEntity<?> createCategory(@Valid @ModelAttribute("categoryModelAttribute") Ca categoryModelAttribute, BindingResult bindingResult, HttpServletRequest request) {
+    @PostMapping(value = "/create", produces = "application/json")
+    public ResponseEntity<?> createCategory(@RequestBody CategoryData categoryData, UserPrincipal currentUser, BindingResult bindingResult, HttpServletRequest request) {
         ResponseEntity responseEntity;
 
         FieldErrorResultObject fieldErrorResultObject = new FieldErrorResultObject();
@@ -47,7 +48,7 @@ public class CategoryController {
             return responseEntity;
         }
 
-        BooleanResultObject resultObject = categoryService.create(categoryModelAttribute.getCategoryName());
+        BooleanResultObject resultObject = categoryService.create(categoryData,currentUser);
 
         if (resultObject.getResponseStatus() == ResponseStatus.INTERNAL_SERVER_ERROR) {
             responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
@@ -62,5 +63,22 @@ public class CategoryController {
         return responseEntity;
     }
 
+
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id, UserPrincipal currentUser, HttpServletRequest request) {
+        ResponseEntity responseEntity;
+        BooleanResultObject resultObject = categoryService.deleteCategory(id,currentUser);
+
+        if (resultObject.getResponseStatus() == ResponseStatus.INTERNAL_SERVER_ERROR) {
+            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ErrorMessageResultObject(new Date(), resultObject.getStatus(), "Internal Server Error!", resultObject.getMessage(), request.getRequestURI()));
+        } else if (resultObject.getResponseStatus() == ResponseStatus.CONFLICT) {
+            responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    new ErrorMessageResultObject(new Date(), resultObject.getStatus(), "Conflict!", resultObject.getMessage(), request.getRequestURI()));
+        } else {
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(resultObject);
+        }
+
+        return responseEntity;
+    }
 }
-*/

@@ -1,10 +1,12 @@
 package com.amd.springbootblog.controller;
 
+import com.amd.springbootblog.common.BaseAbstractController;
+import com.amd.springbootblog.data.BooleanResultObject;
+import com.amd.springbootblog.data.PagingResultObject;
 import com.amd.springbootblog.data.ResponseStatus;
-import com.amd.springbootblog.data.*;
-import com.amd.springbootblog.dto.PostData;
 import com.amd.springbootblog.dto.PostRegister;
-import com.amd.springbootblog.dto.SearchForm;
+import com.amd.springbootblog.dto.PostUpdate;
+import com.amd.springbootblog.security.CurrentUser;
 import com.amd.springbootblog.security.UserPrincipal;
 import com.amd.springbootblog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,83 +15,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/posts")
-public class PostController {
+public class PostController extends BaseAbstractController {
 
     @Autowired
     PostService postService;
 
     @PostMapping(value = "/create")
-    public ResponseEntity<?> createPost(@RequestBody PostRegister postRegister, UserPrincipal userPrincipal, HttpServletRequest request) {
-        ResponseEntity responseEntity;
-        BooleanResultObject booleanResultObject = postService.createPost(postRegister, userPrincipal);
+    public ResponseEntity<?> createPost(@RequestBody PostRegister postRegister, @CurrentUser UserPrincipal currentUser, HttpServletRequest request) {
+      return prepareResponseEntity(postService.createPost(postRegister,currentUser),request);}
 
-        if (booleanResultObject.getResponseStatus() == ResponseStatus.INTERNAL_SERVER_ERROR) {
-            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ErrorMessageResultObject(new Date(), booleanResultObject.getStatus(), "Internal Server Error!", booleanResultObject.getMessage(), request.getRequestURI()));
-        } else if (booleanResultObject.getResponseStatus() == ResponseStatus.CONFLICT) {
-            responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ErrorMessageResultObject(new Date(), booleanResultObject.getStatus(), "Conflict!", booleanResultObject.getMessage(), request.getRequestURI()));
-        } else {
-            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(booleanResultObject);
-        }
-        return responseEntity;
+    @PutMapping(value = "update/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable("id") Long id, @RequestBody PostUpdate postUpdate, @CurrentUser UserPrincipal currentUser, HttpServletRequest request) {
+        return prepareResponseEntity(postService.updatePost(id,postUpdate,currentUser),request);}
+
+    @GetMapping(value = "get/{id}")
+    public ResponseEntity getPostByUser(@PathVariable Long id, @CurrentUser UserPrincipal currentUser, HttpServletRequest request){
+        return prepareResponseEntity(postService.getPost(id,currentUser),request);
     }
 
-    @PutMapping(value = "/update")
-    public ResponseEntity<?> updatePost(@PathVariable @RequestBody PostData postUpdate, HttpServletRequest request) {
+    @GetMapping(value = "/get/{pageNumber}/category-content")
+    public ResponseEntity<?> filterPostsByCategoryAndOrContent(@RequestParam String categoryName, @RequestParam String content, @PathVariable("pageNumber") int pageNumber) {
         ResponseEntity responseEntity;
 
-        BooleanResultObject booleanResultObject = postService.updatePost(postUpdate);
-
-        if (booleanResultObject.getResponseStatus() == ResponseStatus.INTERNAL_SERVER_ERROR) {
-            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ErrorMessageResultObject(new Date(), booleanResultObject.getStatus(), "Internal Server Error!", booleanResultObject.getMessage(), request.getRequestURI()));
-        } else if (booleanResultObject.getResponseStatus() == ResponseStatus.CONFLICT) {
-            responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ErrorMessageResultObject(new Date(), booleanResultObject.getStatus(), "Conflict!", booleanResultObject.getMessage(), request.getRequestURI()));
-        } else {
-            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(booleanResultObject);
-        }
-        return responseEntity;
-    }
-
-    @GetMapping(value = "/{id}")
-    public ResponseEntity getPostById(@PathVariable Long id, HttpServletRequest request){
-        ResponseEntity responseEntity;
-        DataResultObject dataResultObject= postService.getPost(id);
-
-        if (dataResultObject.getResponseStatus() == ResponseStatus.INTERNAL_SERVER_ERROR) {
-            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ErrorMessageResultObject(new Date(), dataResultObject.getStatus(), ResponseStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), "Error", request.getRequestURI()));
-        } else if (dataResultObject.getResponseStatus() == ResponseStatus.NOT_FOUND) {
-            responseEntity = ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ErrorMessageResultObject(new Date(), dataResultObject.getStatus(), ResponseStatus.NOT_FOUND.getReasonPhrase(), ResponseStatus.NO_DATA.getReasonPhrase(), request.getRequestURI()));
-        } else {
-            responseEntity = ResponseEntity.status(HttpStatus.OK).body(dataResultObject);
-        }
-
-        return responseEntity;
-    }
-
-    @GetMapping(value = "/{pageNumber}/category-content")
-    public ResponseEntity<?> filterPostsByCategoryAndOrContent(@PathVariable String categoryName, @PathVariable String content, @PathVariable("pageNo") int pageNumber,@ModelAttribute SearchForm searchForm) {
-
-        ResponseEntity responseEntity;
         PagingResultObject pagingResultObject = postService.filterPostsByCategoryAndOrContent(categoryName, content, pageNumber);
         if (pagingResultObject.getResponseStatus() == ResponseStatus.NO_DATA) {
             responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).body("No content");
         } else {
             responseEntity = ResponseEntity.status(HttpStatus.OK).body(pagingResultObject);
         }
-
         return responseEntity;
     }
-    @GetMapping(value = "{pageNumber}/all")
-    public ResponseEntity<?> getAllPosts(@PathVariable("pageNo") int pageNumber){
+
+    @GetMapping(value = "/get/{pageNumber}/all")
+    public ResponseEntity<?> getAllPosts(@PathVariable("pageNumber") int pageNumber){
         ResponseEntity responseEntity;
         PagingResultObject pagingResultObject= postService.getAllPosts(pageNumber);
         if (pagingResultObject.getResponseStatus() == ResponseStatus.NO_DATA) {
@@ -100,23 +61,9 @@ public class PostController {
         return responseEntity;
     }
 
-    @DeleteMapping(value = "{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id, HttpServletRequest request) {
-        ResponseEntity responseEntity;
-        BooleanResultObject booleanResultObject = postService.deletePost(id);
-
-        if (booleanResultObject.getResponseStatus() == ResponseStatus.INTERNAL_SERVER_ERROR) {
-            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    new ErrorMessageResultObject(new Date(), booleanResultObject.getStatus(), "Internal Server Error!", booleanResultObject.getMessage(), request.getRequestURI()));
-        } else if (booleanResultObject.getResponseStatus() == ResponseStatus.CONFLICT) {
-            responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    new ErrorMessageResultObject(new Date(), booleanResultObject.getStatus(), "Conflict!", booleanResultObject.getMessage(), request.getRequestURI()));
-        } else {
-            responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(booleanResultObject);
-        }
-
-        return responseEntity;
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id, @CurrentUser UserPrincipal currentUser, HttpServletRequest request) {
+        return prepareResponseEntity(postService.deletePost(id,currentUser),request);
     }
-
 
 }

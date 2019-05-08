@@ -33,9 +33,6 @@ public class AuthenticationService {
     RoleRepository roleRepository;
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired

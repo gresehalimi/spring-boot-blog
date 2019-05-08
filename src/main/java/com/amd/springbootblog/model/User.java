@@ -27,7 +27,7 @@ public class User {
     @Column(name = "username", length = 45, nullable = false, unique = false)
     private String username;
 
-    @Column(name = "email", length = 45, nullable = false, unique = false)
+    @Column(name = "email", length = 45, nullable = false, unique = true)
     private String email;
 
     @Column(name = "password", length = 1024, nullable = false)
@@ -45,6 +45,9 @@ public class User {
 
     @OneToMany(targetEntity = Post.class, fetch = FetchType.LAZY)
     private List<Post> post;
+
+    @OneToMany(targetEntity = PostComment.class, fetch = FetchType.LAZY)
+    private List<PostComment> postComments;
 
     public User(String name, String username, String email) {
     }

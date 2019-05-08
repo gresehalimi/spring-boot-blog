@@ -21,11 +21,16 @@ public class PostCategories {
     private Long id;
 
     @ManyToOne(targetEntity = Post.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id",referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     private Post post;
 
     @ManyToOne(targetEntity = Category.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
+
+    public PostCategories(Post post, Category category) {
+        this.category = category;
+        this.post = post;
+    }
 
 }

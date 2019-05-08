@@ -55,7 +55,25 @@ public class AuthController {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
+        ResponseEntity responseEntity;
+        FieldErrorResultObject fieldErrorResultObject = new FieldErrorResultObject();
+        List<com.amd.springbootblog.data.FieldError> list = new ArrayList<>();
+
+        if (bindingResult.hasErrors()) {
+            for (Object object : bindingResult.getAllErrors()) {
+                if (object instanceof FieldError) {
+                    FieldError fieldError = (FieldError) object;
+                    com.amd.springbootblog.data.FieldError fieldError1 = new com.amd.springbootblog.data.FieldError(fieldError.getField(), fieldError.getDefaultMessage());
+                    list.add(fieldError1);
+                }
+            }
+            fieldErrorResultObject.setFieldsError(list);
+            fieldErrorResultObject.setStatus(ResponseStatus.FIELD_ERROR.getValue());
+            fieldErrorResultObject.setResponseStatus(ResponseStatus.FIELD_ERROR);
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(fieldErrorResultObject);
+            return responseEntity;
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -75,18 +93,17 @@ public class AuthController {
         ResponseEntity responseEntity;
 
         FieldErrorResultObject fieldErrorResultObject = new FieldErrorResultObject();
-        fieldErrorResultObject.setResponseStatus(ResponseStatus.FIELD_ERROR);
         List<com.amd.springbootblog.data.FieldError> list = new ArrayList<>();
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             if (!bindingResult.hasFieldErrors("password") && !bindingResult.hasFieldErrors("confirmPassword")) {
                 if (!userRegister.getPassword().equals(userRegister.getConfirmPassword())) {
                     list = fieldErrorResultObject.getFieldsError();
                     list.add(new com.amd.springbootblog.data.FieldError("confirmPassword", "Password is not equal with confirmPassword!"));
                 }
             }
-            for (Object object : bindingResult.getAllErrors()){
-                if(object instanceof FieldError){
+            for (Object object : bindingResult.getAllErrors()) {
+                if (object instanceof FieldError) {
                     FieldError fieldError = (FieldError) object;
                     com.amd.springbootblog.data.FieldError fieldError1 = new com.amd.springbootblog.data.FieldError(fieldError.getField(), fieldError.getDefaultMessage());
                     list.add(fieldError1);

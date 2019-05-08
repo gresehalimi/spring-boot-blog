@@ -8,11 +8,11 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class PostCommentDTO {
+public class PostCommentData {
 
     @NotNull
     private Long postId;
-
     @NotBlank
+    @NotNull
     private String comment;
 }

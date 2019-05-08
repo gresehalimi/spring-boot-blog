@@ -24,7 +24,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/user/me")
+    @GetMapping("/me")
     public ResponseEntity getCurrentUser(@CurrentUser UserPrincipal currentUser, HttpServletRequest request) {
         ResponseEntity responseEntity;
         DataResultObject resultObject = userService.getCurrentUser(currentUser);

@@ -12,6 +12,8 @@ public enum ResponseStatus {
 
     CREATED(201, "Created"),
 
+    NOT_AUTHORIZED(404, "Not AUTHORIZED"),
+
     NOT_FOUND(404, "Not Found"),
 
     NO_DATA(204, "No Data"),

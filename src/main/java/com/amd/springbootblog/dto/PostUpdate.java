@@ -1,5 +1,6 @@
 package com.amd.springbootblog.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostData {
+public class PostUpdate {
 
     @NotNull
     @NotBlank
@@ -25,13 +26,8 @@ public class PostData {
     @Size(max = 10000)
     private String content;
 
-    private String username;
 
-    private String imageUrl;
+    private String image;
 
     private List<CategoryData> categories;
-
-
-
 }
-

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,9 +25,8 @@ public class PostRegister {
     @Size(max = 10000)
     private String content;
 
-    @NotNull
-    @NotBlank
-    private MultipartFile multipartFile;
+    private String image;
+
 
     @NotNull
     @NotBlank
