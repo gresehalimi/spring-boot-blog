@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-/**
- * Created by rajeevkumarsingh on 19/08/17.
- */
+
 @Component
 public class JwtTokenProvider {
 
@@ -69,7 +67,4 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public Long getUserApplicationId(String token){
-        return Long.parseLong(Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getId());
-    }
 }

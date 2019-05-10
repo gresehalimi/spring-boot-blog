@@ -1,4 +1,5 @@
 package com.amd.springbootblog.security;
+
 import com.amd.springbootblog.model.User;
 import com.amd.springbootblog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

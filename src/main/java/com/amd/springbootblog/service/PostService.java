@@ -17,16 +17,17 @@ import com.amd.springbootblog.repository.CategoryRepository;
 import com.amd.springbootblog.repository.PostCategoriesRepository;
 import com.amd.springbootblog.repository.PostRepository;
 import com.amd.springbootblog.repository.UserRepository;
-import com.amd.springbootblog.security.CurrentUser;
 import com.amd.springbootblog.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +54,6 @@ public class PostService extends BaseAbstractService {
     @Value("${image.url}")
     String url;
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     public BooleanResultObject createPost(PostRegister postRegister, UserPrincipal currentUser) {
         BooleanResultObject booleanResultObject = new BooleanResultObject();
         booleanResultObject.setStatus(409);
@@ -92,7 +92,7 @@ public class PostService extends BaseAbstractService {
 
                 postCategoriesList.add(postCategories);
             }
-            post.setPostCategories(postCategoriesList);
+            post.setPostCategories(new ArrayList<>(postCategoriesList));
 
             postRepository.save(post);
 
@@ -108,7 +108,6 @@ public class PostService extends BaseAbstractService {
         return booleanResultObject;
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     public BooleanResultObject updatePost(Long id, PostUpdate postUpdate, UserPrincipal currentUser) {
         BooleanResultObject booleanResultObject = new BooleanResultObject();
         booleanResultObject.setStatus(409);
@@ -135,9 +134,7 @@ public class PostService extends BaseAbstractService {
                     post.setCreatedTime(new Date());
                     post.setUser(user);
 
-
                     List<CategoryData> categoriesList = postUpdate.getCategories();
-
                     List<PostCategories> postCategoriesList = new ArrayList<>();
                     for (CategoryData categoryData : categoriesList) {
                         Optional<Category> optionalCategory = categoryRepository.findByCategoryName(categoryData.getCategoryName());
@@ -149,6 +146,7 @@ public class PostService extends BaseAbstractService {
                             return booleanResultObject;
                         }
                         Category category = optionalCategory.get();
+
                         PostCategories postCategories = new PostCategories(post, category);
 
                         postCategoriesList.add(postCategories);
@@ -186,7 +184,7 @@ public class PostService extends BaseAbstractService {
 
             if (optionalPost.isPresent()) {
                 Post post = optionalPost.get();
-                if ( currentUser.getUsername().equals(post.getUser().getUsername())) {
+                if (currentUser.getUsername().equals(post.getUser().getUsername())) {
                     postData.setTitle(post.getTitle());
                     postData.setContent(post.getContent());
                     List<PostCategories> pc = post.getPostCategories();
@@ -203,10 +201,10 @@ public class PostService extends BaseAbstractService {
                     postData.setImageUrl(imageUrl);
                     postData.setUsername(currentUser.getUsername());
 
-                dataResultObject.setStatus(200);
-                dataResultObject.setResponseStatus(ResponseStatus.SUCCESS);
-                dataResultObject.setData(postData);
-                return dataResultObject;
+                    dataResultObject.setStatus(200);
+                    dataResultObject.setResponseStatus(ResponseStatus.SUCCESS);
+                    dataResultObject.setData(postData);
+                    return dataResultObject;
                 }
             } else
                 dataResultObject.setStatus(209);
@@ -220,6 +218,7 @@ public class PostService extends BaseAbstractService {
         return dataResultObject;
     }
 
+    @Secured("ROLE_ADMIN")
     public PagingResultObject getAllPosts(int pageNo) {
         PagingResultObject pagingResultObject = new PagingResultObject();
         pagingResultObject.setResponseStatus(ResponseStatus.CONFLICT);
@@ -266,7 +265,7 @@ public class PostService extends BaseAbstractService {
     }
 
 
-    public BooleanResultObject deletePost(Long postId,UserPrincipal currentUser) {
+    public BooleanResultObject deletePost(Long postId, UserPrincipal currentUser) {
         BooleanResultObject booleanResultObject = new BooleanResultObject();
         booleanResultObject.setResponseStatus(ResponseStatus.CONFLICT);
         booleanResultObject.setStatus(409);
@@ -274,15 +273,14 @@ public class PostService extends BaseAbstractService {
             Optional<Post> optionalPost = postRepository.findById(postId);
             if (optionalPost.isPresent()) {
                 Post post = optionalPost.get();
-                if(post.getUser().getUsername().equals(currentUser.getUsername())) {
+                if (post.getUser().getUsername().equals(currentUser.getUsername())) {
 
                     postRepository.delete(post);
 
-                booleanResultObject.setStatus(200);
-                booleanResultObject.setResponseStatus(ResponseStatus.SUCCESS);
-                booleanResultObject.setMessage("Post successfully deleted");
-            }
-                else
+                    booleanResultObject.setStatus(200);
+                    booleanResultObject.setResponseStatus(ResponseStatus.SUCCESS);
+                    booleanResultObject.setMessage("Post successfully deleted");
+                } else
                     booleanResultObject.setMessage("you are not the owner of the post, you can't delete it!");
             }
         } catch (Exception e) {

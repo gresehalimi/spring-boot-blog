@@ -3,7 +3,6 @@ package com.amd.springbootblog.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -12,7 +11,7 @@ public class PostCommentData {
 
     @NotNull
     private Long postId;
-    @NotBlank
+
     @NotNull
     private String comment;
 }

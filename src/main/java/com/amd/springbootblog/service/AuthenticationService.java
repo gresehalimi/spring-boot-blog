@@ -72,13 +72,13 @@ public class AuthenticationService {
             user.setCreatedTime(new Date());
             user.setRoles(Collections.singletonList(userRole));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User result = userRepository.save(user);
-
+           /* User result = */userRepository.save(user);
+/*
                    ServletUriComponentsBuilder
                     .fromCurrentContextPath().path("/users/{username}")
-                    .buildAndExpand(result.getUsername()).toUri();
+                    .buildAndExpand(result.getUsername()).toUri();*/
 
-            resultObject.setStatus(201);
+            resultObject.setStatus(200);
             resultObject.setResponseStatus(ResponseStatus.CREATED);
             resultObject.setMessage("Success!");
         } catch (Exception e) {

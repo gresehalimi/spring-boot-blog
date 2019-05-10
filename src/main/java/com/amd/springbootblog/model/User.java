@@ -24,7 +24,7 @@ public class User {
     @Column(name = "fullName", length = 45, nullable = false, unique = false)
     private String fullName;
 
-    @Column(name = "username", length = 45, nullable = false, unique = false)
+    @Column(name = "username", length = 45, nullable = false, unique = true)
     private String username;
 
     @Column(name = "email", length = 45, nullable = false, unique = true)

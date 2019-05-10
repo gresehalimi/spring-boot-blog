@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -16,13 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class PostData {
 
-    @NotNull
-    @NotBlank
     private String title;
 
-    @NotNull
-    @NotBlank
-    @Size(max = 10000)
     private String content;
 
     private String username;

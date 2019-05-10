@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping(name = "/api")
+@RequestMapping("/api/profile")
 public class ProfileController {
 
     @Autowired
     ProfileService profileService;
 
-    @GetMapping(name = "/{pageNumber}/profile/{username}")
-    public ResponseEntity<?> getProfileByUsername(@RequestParam String username,@PathVariable("pageNumber") int pageNumber) {
+    @GetMapping(value = "get/{pageNumber}/username/{username}")
+    public ResponseEntity<?> filterPostsByCategoryAndOrContent(@PathVariable("username") String username, @PathVariable("pageNumber") int pageNumber) {
         ResponseEntity responseEntity;
-        System.out.println(username+" "+pageNumber);
+
         PagingResultObject pagingResultObject = profileService.profileByUsername(username, pageNumber);
         if (pagingResultObject.getResponseStatus() == ResponseStatus.NO_DATA) {
             responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).body("No content");
@@ -32,8 +32,8 @@ public class ProfileController {
         return responseEntity;
     }
 
-    @GetMapping("/home")
-    public ResponseEntity<?> home(@RequestParam int pageNumber, @CurrentUser UserPrincipal currentUser) {
+    @GetMapping("get/{pageNumber}/home")
+    public ResponseEntity<?> home(@PathVariable("pageNumber") int pageNumber, @CurrentUser UserPrincipal currentUser) {
         ResponseEntity responseEntity;
         PagingResultObject pagingResultObject = profileService.home(pageNumber,currentUser);
         if (pagingResultObject.getResponseStatus() == ResponseStatus.NO_DATA) {
