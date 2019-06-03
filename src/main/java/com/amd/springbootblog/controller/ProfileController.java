@@ -20,7 +20,7 @@ public class ProfileController {
     ProfileService profileService;
 
     @GetMapping(value = "get/{pageNumber}/username/{username}")
-    public ResponseEntity<?> filterPostsByCategoryAndOrContent(@PathVariable("username") String username, @PathVariable("pageNumber") int pageNumber) {
+    public ResponseEntity<?> profile(@PathVariable("username") String username, @PathVariable("pageNumber") int pageNumber) {
         ResponseEntity responseEntity;
 
         PagingResultObject pagingResultObject = profileService.profileByUsername(username, pageNumber);

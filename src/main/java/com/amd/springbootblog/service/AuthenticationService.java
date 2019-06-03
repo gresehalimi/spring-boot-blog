@@ -72,11 +72,7 @@ public class AuthenticationService {
             user.setCreatedTime(new Date());
             user.setRoles(Collections.singletonList(userRole));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-           /* User result = */userRepository.save(user);
-/*
-                   ServletUriComponentsBuilder
-                    .fromCurrentContextPath().path("/users/{username}")
-                    .buildAndExpand(result.getUsername()).toUri();*/
+            userRepository.save(user);
 
             resultObject.setStatus(200);
             resultObject.setResponseStatus(ResponseStatus.CREATED);
@@ -106,7 +102,7 @@ public class AuthenticationService {
 
             if (user.getPassword().equals(passwordUpdate.getOldPassword())) {
                 if (passwordUpdate.getPassword().equals(passwordUpdate.getConfirmPassword())) {
-                    user.setPassword(passwordUpdate.getConfirmPassword());
+                    user.setPassword(passwordEncoder.encode(passwordUpdate.getConfirmPassword()));
 
                     userRepository.save(user);
                     resultObject.setStatus(201);

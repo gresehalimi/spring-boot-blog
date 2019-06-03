@@ -45,7 +45,7 @@ public class Post {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @OneToMany(targetEntity = PostCategories.class, mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = PostCategories.class, mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
     private List<PostCategories> postCategories;
 
 }

@@ -32,5 +32,4 @@ public class PostCategories {
         this.category = category;
         this.post = post;
     }
-
 }

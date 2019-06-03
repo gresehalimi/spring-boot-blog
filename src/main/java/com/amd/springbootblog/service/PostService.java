@@ -135,7 +135,10 @@ public class PostService extends BaseAbstractService {
                     post.setUser(user);
 
                     List<CategoryData> categoriesList = postUpdate.getCategories();
-                    List<PostCategories> postCategoriesList = new ArrayList<>();
+
+                    List<PostCategories> pc = post.getPostCategories();
+                    pc.clear();
+
                     for (CategoryData categoryData : categoriesList) {
                         Optional<Category> optionalCategory = categoryRepository.findByCategoryName(categoryData.getCategoryName());
 
@@ -146,13 +149,12 @@ public class PostService extends BaseAbstractService {
                             return booleanResultObject;
                         }
                         Category category = optionalCategory.get();
-
                         PostCategories postCategories = new PostCategories(post, category);
 
-                        postCategoriesList.add(postCategories);
-                    }
-                    post.setPostCategories(postCategoriesList);
+                        pc.add(postCategories);
 
+                    }
+                    post.getPostCategories().addAll(pc);
                     postRepository.save(post);
                     booleanResultObject.setStatus(200);
                     booleanResultObject.setResponseStatus(ResponseStatus.SUCCESS);
@@ -313,8 +315,6 @@ public class PostService extends BaseAbstractService {
         }
         return postDataList;
     }
-
-
 }
 
 
